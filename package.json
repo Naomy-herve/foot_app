@@ -1,3 +1,4 @@
+
 {
   "name": "foot26-championnat",
   "version": "2.1.1",
@@ -9,7 +10,7 @@
   "scripts": {
     "dev": "wrangler pages dev public",
     "check": "node --check 'functions/api/[[path]].js' && node scripts/check-project.mjs",
-    "deploy": "wrangler pages deploy public --project-name foot26"
+    "deploy": "wrangler pages deploy public --project-name=foot26"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.45.0"

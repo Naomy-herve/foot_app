@@ -1,4 +1,5 @@
-name = "foot26"
+
+name = "foot-app"
 pages_build_output_dir = "./public"
 compatibility_date = "2026-10-11"
 compatibility_flags = ["nodejs_compat"]

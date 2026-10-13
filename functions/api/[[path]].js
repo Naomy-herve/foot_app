@@ -115,7 +115,7 @@ export async function onRequest(context) {
       const email = cleanEmail(body.email);
       const name = typeof body.name === 'string' ? body.name.trim() : '';
       const password = String(body.password || '');
-      const confirmation = String(body.confirmPassword || '');
+      const confirmation = String(body.confirmPassword ?? body.confirmCode ?? '');
       if (!validName(name)) return fail('Le nom d’utilisateur doit contenir entre 2 et 60 caractères.');
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || email.length > 254) return fail('Adresse e-mail invalide.');
       if (!digitsOnly(password)) return fail('Choisissez un code personnel composé exactement de 8 chiffres.');

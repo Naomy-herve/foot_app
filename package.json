@@ -4,9 +4,9 @@
   "version": "2.1.1",
   "private": true,
   "type": "module",
-  "engines": {
-    "node": ">=20"
-  },
+"engines": {
+  "node": "22.x"
+}
   "scripts": {
     "dev": "wrangler pages dev public",
     "check": "node --check 'functions/api/[[path]].js' && node scripts/check-project.mjs",

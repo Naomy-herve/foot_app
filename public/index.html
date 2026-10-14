@@ -145,8 +145,28 @@ function rAdm(){const on=S.user?.role==='admin';$('#admin').hidden=!on;$('#adl')
  F('result','Saisir un résultat',s('id','Match',o(M.filter(m=>!m.played),mm))+i('hg','Buts domicile','number')+i('ag','Buts extérieur','number'),'Valider')+
  F('events','But ou carton',s('match_id','Match',o(M,mm))+s('player_id','Joueur',o(S.d.pp.map(p=>({...p,name:p.name})),p=>p.name))+s('type','Type','<option value="goal">But</option><option value="yellow">Carton jaune</option><option value="red">Carton rouge</option>')+i('minute','Minute','number'),'Enregistrer')+
  F('stadiums','Nouveau stade',i('name','Nom')+i('city','Ville')+i('capacity','Capacité','number'),'Ajouter')+F('referees','Nouvel arbitre',i('name','Nom')+i('country','Pays'),'Ajouter')}
-function auth(){$('#who').textContent=S.user?.name||'';$('#lo').textContent=S.user?'Déconnexion':'Connexion';$('#su').hidden=!!S.user;
- $('#nb').textContent=(S.d.no||[]).length;$('#nt').innerHTML=(S.d.no||[]).map(n=>`<div>${esc(n.text)}<br><small>${new Date(n.date).toLocaleString('fr-FR')}</small></div>`).join('')||'<div>Aucune notification</div>';rAdm()}
+
+function auth() {
+  const connected = !!S.user;
+
+  // Afficher le nom du compte et adapter le bouton de connexion.
+  $('#who').textContent = connected ? S.user.name : '';
+  $('#lo').textContent = connected ? 'Déconnexion' : 'Connexion';
+
+  // Masquer tous les boutons d'inscription lorsque l'utilisateur est connecté.
+  $('#su').hidden = connected;
+  $('#su2').hidden = connected;
+  $('#su3').hidden = connected;
+
+  // Actualiser les notifications et les droits administrateur.
+  $('#nb').textContent = (S.d.no || []).length;
+  $('#nt').innerHTML = (S.d.no || []).map(n =>
+    `<div>${esc(n.text)}<br><small>${new Date(n.date).toLocaleString('fr-FR')}</small></div>`
+  ).join('') || '<div>Aucune notification</div>';
+
+  rAdm();
+}
+
 // Événements
 const R={qs:rSt,qc:rCal,ft:rCal,qp:rPl,fp:rPl,qt:rClubs};
 document.addEventListener('input',e=>R[e.target.id]?.());document.addEventListener('change',e=>R[e.target.id]?.());
@@ -161,5 +181,11 @@ let reg=false;const mode=r=>{reg=r;$('#ap').value='';$('#ac').value='';$('#an').
 const open=r=>{mode(r);$('#dlg').showModal()};$('#sw').onclick=()=>mode(!reg);$('#su').onclick=$('#su2').onclick=$('#su3').onclick=()=>open(true);
 $('#lo').onclick=()=>S.user?out():open(false);
 $('#af').onsubmit=async e=>{e.preventDefault();try{const body=Object.fromEntries(new FormData(e.target));if(reg){if(!/^\d{8}$/.test(body.password||''))throw new Error('Le code personnel doit contenir exactement 8 chiffres.');if(body.password!==body.confirmPassword)throw new Error('Les deux codes ne correspondent pas.')}const r=await api(reg?'register':'login',{method:'POST',body});if(!r.token||!r.user){$('#dlg').close();toast(r.message||'Compte créé. Connectez-vous avec votre code.');mode(false);return}S.user=r.user;S.token=r.token;localStorage.setItem('u',JSON.stringify(r.user));localStorage.setItem('t',r.token);$('#dlg').close();toast('Bienvenue '+r.user.name);auth()}catch(x){$('#ae').textContent=x.message}};
-load().catch(x=>{$('#st').innerHTML='<div class="em">Impossible de charger les données : '+esc(x.message)+'</div>'});setInterval(()=>load().catch(()=>{}),30000);
+auth();
+load().catch(x => {
+  $('#st').innerHTML =
+    '<div class="em">Impossible de charger les données : ' +
+    esc(x.message) + '</div>';
+});
+ load().catch(x=>{$('#st').innerHTML='<div class="em">Impossible de charger les données : '+esc(x.message)+'</div>'});setInterval(()=>load().catch(()=>{}),30000);
 </script></body></html>

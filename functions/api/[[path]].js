@@ -15,7 +15,10 @@ const json = (data, status = 200) => new Response(JSON.stringify(data), {
 const fail = (message, status = 400) => json({ error: message }, status);
 const cleanEmail = value => String(value || '').trim().toLowerCase();
 const validName = value => typeof value === 'string' && value.trim().length >= 2 && value.trim().length <= 60;
-const digitsOnly = value => typeof value === 'string' && /^\d{8}$/.test(value);
+const digitsOnly = value =>
+  typeof value === 'string' &&
+  value.length >= 8 &&
+  value.length <= 128;
 const safeError = error => error?.message || 'Une erreur est survenue.';
 
 function clients(env) {
